@@ -1,0 +1,8 @@
+Changes                          This is the Changes File
+Makefile.PL
+MANIFEST
+README.md
+lib/Test/SPDX/Coverage.pm        This is the Package File
+t/001_load.t
+t/spdx-coverage.t
+
