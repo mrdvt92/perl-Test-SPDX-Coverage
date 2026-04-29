@@ -1,6 +1,7 @@
 package Test::SPDX::Coverage;
 use strict;
 use warnings;
+use License::SPDX;
 use Test::Builder;
 use base qw{Exporter};
 
@@ -89,6 +90,7 @@ sub spdx_coverage_ok {
   $Test->diag(sprintf("Files: %s", scalar(@filenames))) if $diag > 0;
   my $test_count = 2;
   $Test->plan(tests => $test_count * @filenames);
+  my $license_spdx = License::SPDX->new;
   foreach my $filename (@filenames) {
     $Test->diag("Filename: $filename") if $diag > 0;
     my $found;
@@ -111,12 +113,13 @@ sub spdx_coverage_ok {
     }
     if ($found) {
       $Test->ok(1, "SPDX-License-Identifier Found");
-      $Test->todo_start();
       my $license      = $found->{'license'};
-      my $test_license = 0;  #TODO: test the license string add common Perl dula license example.
+      my $test_license = 0;
+      if ($license_spdx->check_license($license)) {
+        $test_license = 1;
+      }
       $Test->diag("License: $license");
-      $Test->ok($test_license, "TODO: License: $license, SPDX-License-Identifier license valid.");
-      $Test->todo_end();
+      $Test->ok($test_license, "License: $license, SPDX-License-Identifier license valid.");
     } else {
       $Test->ok(0, "SPDX-License-Identifier found.");
       $Test->ok(0, "SPDX-License-Identifier license valid.");
