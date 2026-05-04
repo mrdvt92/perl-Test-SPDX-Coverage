@@ -4,5 +4,10 @@ MANIFEST
 README.md
 lib/Test/SPDX/Coverage.pm        This is the Package File
 t/001_load.t
+t/002_manifest.t
+manifest.examples.txt
+examples/test_case_mit.test
+examples/test_case_same_as_perl_itself.test
+t/003_manifest_not_found.t
 t/spdx-coverage.t
-
+t/spdx-coverage-options.t

@@ -1,0 +1,2 @@
+examples/test_case_mit.test
+examples/test_case_same_as_perl_itself.test

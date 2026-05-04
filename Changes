@@ -1,4 +1,9 @@
 Revision history for Perl extension Test::SPDX::Coverage.
 
+0.02 2026-05-04
+  - Merged PR #1 and edited a bit
+  - Added test cases
+    - "Same as Perl" test case fails due to https://github.com/michal-josef-spacek/License-SPDX/issues/2
+
 0.01 2026-04-27
   - original version

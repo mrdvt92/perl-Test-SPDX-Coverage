@@ -8,3 +8,5 @@ all_pod_files_spelling_ok();
 __DATA__
 SPDX
 cgi
+Michal
+Spacek

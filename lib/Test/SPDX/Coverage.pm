@@ -64,35 +64,35 @@ sub spdx_coverage_ok {
 
   my $diag = $opt->{'diag'} ||= 0; $diag+=0;
   my $Test = $opt->{'builder'} ||= Test::Builder->new;
-  $Test->diag("Start") if $diag > 0;
+  $Test->diag("Start") if $diag > 1;
   my @filenames = ();
-  $Test->diag(sprintf("Opening manifest file: %s", $opt->{'manifest'})) if $diag > 0;
+  $Test->diag(sprintf("Opening manifest file: %s", $opt->{'manifest'})) if $diag > 2;
   #TODO: Use a package to read MANIFEST e.g. Module::Manifest
   { #gather files for test plan count
     my $fh;
     open($fh, '<', $opt->{'manifest'}) or die(sprintf('Error: option "manifest" invalid. File "%s" could not be opened.', $opt->{'manifest'}));
-    $Test->diag(qq{Reading manifest file}) if $diag > 0;
+    $Test->diag(qq{Reading manifest file}) if $diag > 3;
     while (my $entry = <$fh>) {
       $entry =~ s/\A\s*//; #ltrim - is this valid?
       next if $entry =~ m/\A#/; #comments
       $entry =~ s/\s*\Z//; #rtrim - instead of chomp for cross platform file support
       $entry =~ s/\s.*\Z//; #strip comments - format is filename {whitespace} comment - #TODO: support quoted filenames with whitespace
-      $Test->diag("Filename: $entry") if $diag > 0;
+      $Test->diag("Filename: $entry") if $diag > 4;
       if ($entry =~ $match) {
-        $Test->diag("Filename: $entry, File matches regular expression.") if $diag > 0;
+        $Test->diag("Filename: $entry, Action: Adding, Reason: File matches regular expression.") if $diag > 2;
         push @filenames, $entry;
       } else {
-        $Test->diag("Filename: $entry, File does not match regular expression. Skipping.") if $diag > 0;
+        $Test->diag("Filename: $entry, File does not match regular expression. Skipping.") if $diag > 5;
       }
     }
     close($fh);
   }
-  $Test->diag(sprintf("Files: %s", scalar(@filenames))) if $diag > 0;
+  $Test->diag(sprintf("Files: %s", scalar(@filenames))) if $diag > 3;
   my $test_count = 2;
   $Test->plan(tests => $test_count * @filenames);
   my $license_spdx = License::SPDX->new;
   foreach my $filename (@filenames) {
-    $Test->diag("Filename: $filename") if $diag > 0;
+    $Test->diag("Filename: $filename") if $diag > 1;
     my $found;
     { #scope for $fh
       my $fh;
@@ -114,18 +114,15 @@ sub spdx_coverage_ok {
     if ($found) {
       $Test->ok(1, "SPDX-License-Identifier Found");
       my $license      = $found->{'license'};
-      my $test_license = 0;
-      if ($license_spdx->check_license($license)) {
-        $test_license = 1;
-      }
-      $Test->diag("License: $license");
+      my $test_license = $license_spdx->check_license($license);
+      $Test->diag("License: $license") if $diag > 1;
       $Test->ok($test_license, "License: $license, SPDX-License-Identifier license valid.");
     } else {
       $Test->ok(0, "SPDX-License-Identifier found.");
       $Test->ok(0, "SPDX-License-Identifier license valid.");
     }
   }
-  $Test->diag("Finish") if $diag > 0;
+  $Test->diag("Finish") if $diag > 1;
 }
 
 =head1 SEE ALSO
@@ -134,9 +131,10 @@ L<License::SPDX>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2026 by Michael Davis
+Copyright (C) 2026 by Michael Davis, Michal Josef Spacek
 
 MIT
 
 =cut
+
 1;
