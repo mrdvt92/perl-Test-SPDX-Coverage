@@ -7,7 +7,7 @@ use base qw{Exporter};
 
 # SPDX-License-Identifier: MIT
 
-our $VERSION = '0.01';
+our $VERSION = '0.03';
 our @EXPORT  = qw{spdx_coverage_ok};
 
 =head1 NAME
@@ -24,7 +24,7 @@ Test::SPDX::Coverage - Perl Test Harness to verify all matched files in Manifest
 
 =head1 DESCRIPTION
 
-Test::SPDX::Coverage reads your manifest for all .pm, .pl, .cgi files than searches for a SPDX-License-Identifier.  Once found, the License specified on the SPDX-License-Identifier line is extracted and verified against the L<License::SPDX> database.
+Test::SPDX::Coverage reads your manifest for .pm, .pl, .cgi files then searches for a SPDX-License-Identifier.  Once found, the License specified on the SPDX-License-Identifier line is extracted and verified against the L<License::SPDX> database.
 
 For Perl source code, the SPDX-License-Identifier must be formatted like this:
 
@@ -102,9 +102,9 @@ sub spdx_coverage_ok {
         $line_number++;
         $line_text =~ s/[\n\r]+\Z//; #chompish
         if ($line_text =~ m/\A\s*#\s*SPDX-License-Identifier:\s*([a-zA-Z0-9 ()+.-]+)\s*\Z/) { #TODO: add c or xml capability i.e. //, /* */, <!-- -->
-          my $license = $1;
-          $found      = {filename=>$filename, line_number=>$line_number, line_text=> $line_text , license=> $license};
-          $Test->diag(qq{Filename: $filename, Line Number: $line_number, Line Text: "$line_text", License: "$license"}) if $diag > 0;
+          my $license_expression = $1;
+          $found      = {filename=>$filename, line_number=>$line_number, line_text=> $line_text , license_expression=> $license_expression};
+          $Test->diag(qq{Filename: $filename, Line Number: $line_number, Line Text: "$line_text", License Expression: "$license_expression"}) if $diag > 0;
         }
         last if $found;
         last if $line_number >= $lines;
@@ -113,13 +113,19 @@ sub spdx_coverage_ok {
     }
     if ($found) {
       $Test->ok(1, "SPDX-License-Identifier Found");
-      my $license      = $found->{'license'};
-      my $test_license = $license_spdx->check_license($license);
-      $Test->diag("License: $license") if $diag > 1;
-      $Test->ok($test_license, "License: $license, SPDX-License-Identifier license valid.");
+      my $license_expression = $found->{'license_expression'}; #might be as expression
+      my $separator          = qr/ +(?:AND|OR|WITH) +/;
+      my @licenses           = $license_expression=~ $separator ? (split $separator, $license_expression) : ($license_expression);
+      my $license_counter    = scalar(@licenses);
+      foreach my $license (@licenses) {
+        my $check = $license_spdx->check_license($license) ? 1 : 0; #convert Boolean to 1/0
+        $Test->diag("License: $license, Check: $check") if $diag > 1;
+        $license_counter-- if $check;
+      }
+      $Test->ok($license_counter == 0, "SPDX-License-Identifier license expression is valid");
     } else {
-      $Test->ok(0, "SPDX-License-Identifier found.");
-      $Test->ok(0, "SPDX-License-Identifier license valid.");
+      $Test->ok(0, "SPDX-License-Identifier was not found.");
+      $Test->skip("SPDX-License-Identifier license was not found.");
     }
   }
   $Test->diag("Finish") if $diag > 1;
