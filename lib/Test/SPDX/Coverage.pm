@@ -7,8 +7,10 @@ use base qw{Exporter};
 
 # SPDX-License-Identifier: MIT
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 our @EXPORT  = qw{spdx_coverage_ok};
+
+=encoding utf8
 
 =head1 NAME
 
@@ -137,7 +139,7 @@ L<License::SPDX>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2026 by Michael Davis, Michal Josef Spacek
+Copyright (C) 2026 by Michael Davis, Michal Josef Špaček
 
 MIT
 

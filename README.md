@@ -12,7 +12,7 @@ Test::SPDX::Coverage - Perl Test Harness to verify all matched files in Manifest
 
 # DESCRIPTION
 
-Test::SPDX::Coverage reads your manifest for all .pm, .pl, .cgi files than searches for a SPDX-License-Identifier.  Once found, the License specified on the SPDX-License-Identifier line is extracted and verified against the [License::SPDX](https://metacpan.org/pod/License%3A%3ASPDX) database.
+Test::SPDX::Coverage reads your manifest for .pm, .pl, .cgi files then searches for a SPDX-License-Identifier.  Once found, the License specified on the SPDX-License-Identifier line is extracted and verified against the [License::SPDX](https://metacpan.org/pod/License%3A%3ASPDX) database.
 
 For Perl source code, the SPDX-License-Identifier must be formatted like this:
 
@@ -39,6 +39,6 @@ Essentially, this is a wrapper around License::SPDX->new->check\_license($licens
 
 # COPYRIGHT AND LICENSE
 
-Copyright (C) 2026 by Michael Davis
+Copyright (C) 2026 by Michael Davis, Michal Josef Špaček
 
 MIT

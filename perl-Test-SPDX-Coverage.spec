@@ -1,5 +1,5 @@
 Name:           perl-Test-SPDX-Coverage
-Version:        0.03
+Version:        0.04
 Release:        1%{?dist}
 Summary:        Perl Test Harness to verify all matched files in Manifest have a SPDX-License-Identifier
 License:        MIT
