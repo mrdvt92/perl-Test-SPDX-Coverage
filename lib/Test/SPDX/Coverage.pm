@@ -7,7 +7,7 @@ use base qw{Exporter};
 
 # SPDX-License-Identifier: MIT
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 our @EXPORT  = qw{spdx_coverage_ok};
 
 =encoding utf8
